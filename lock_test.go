@@ -2,11 +2,14 @@ package redisutil
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/go-redis/redis/v7"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,8 +43,18 @@ func (r *rediser) Del(ctx context.Context, keys ...string) *redis.IntCmd {
 }
 
 func dialCli() *Client {
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPort := os.Getenv("REDIS_PORT")
+	var addr string
+	if redisHost == "" {
+		addr = "localhost:6379"
+	} else {
+		addr = fmt.Sprintf("%s:%s", redisHost, redisPort)
+	}
+	logrus.Infof("redis addr: %s", addr)
+
 	redCli := redis.NewClient(&redis.Options{
-		Addr:       "localhost:6379",
+		Addr:       addr,
 		DB:         0,
 		MaxRetries: 3,
 		PoolSize:   8,

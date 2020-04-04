@@ -11,7 +11,7 @@ jobs:
   test:
     name: Run test
     runs-on: ubuntu-latest
-    # Service containers to run with `container-job`
+    # Service containers to run with `runner-job`
     services:
       # Label used to access the service container
       redis:
@@ -23,6 +23,10 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          # Maps port 6379 on service container to the host
+          - 6379:6379
+
     steps:
 
     - name: Set up Go 1.13
@@ -38,3 +42,8 @@ jobs:
       run: |
         make deps
         make test
+      env:
+        # The hostname used to communicate with the Redis service container
+        REDIS_HOST: localhost
+        # The default Redis port
+        REDIS_PORT: 6379
