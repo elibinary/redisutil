@@ -78,7 +78,7 @@ func (cli *Client) GetLock(ctx context.Context, key string, expiration time.Dura
 
 func (cli *Client) Free(ctx context.Context, l *Lock) error {
 	// only DEL it if it hasn't expired
-	if l.value < time.Now().UnixNano() {
+	if l.value > time.Now().UnixNano() {
 		return cli.Redis.Del(ctx, l.Key).Err()
 	}
 
@@ -129,7 +129,7 @@ func (cli *Client) lockup(ctx context.Context, key string, expiration time.Durat
 }
 
 func (cli *Client) generateExpiration(expiration time.Duration) int64 {
-	if expiration < time.Second {
+	if expiration < time.Millisecond {
 		return time.Now().Add(time.Second).UnixNano()
 	}
 
