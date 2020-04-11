@@ -7,3 +7,5 @@ Utils for redis
 ## Lock
 
 A convenience pkg that wraps the pattern of [Locking with SETNX](http://redis.io/commands/setnx)
+
+example: https://github.com/elibinary/redisutil/blob/master/lock_test.go
